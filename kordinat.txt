@@ -1,0 +1,133 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local setclipboard = setclipboard or toclipboard or set_clipboard
+
+-- ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.Name = "CoordChecker"
+
+-- Main Frame
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 250, 0, 150)
+Frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+Frame.Parent = ScreenGui
+Frame.Visible = true
+
+-- UICorner
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+-- Title
+local Title = Instance.new("TextLabel")
+Title.Text = "Coordinate Checker"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Size = UDim2.new(1, -10, 0, 30)
+Title.Position = UDim2.new(0, 5, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Frame
+
+-- Minimize Button
+local MinBtn = Instance.new("TextButton")
+MinBtn.Text = "-"
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.TextSize = 18
+MinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MinBtn.Size = UDim2.new(0, 25, 0, 25)
+MinBtn.Position = UDim2.new(1, -30, 0, 2)
+MinBtn.Parent = Frame
+
+local UICorner2 = Instance.new("UICorner", MinBtn)
+UICorner2.CornerRadius = UDim.new(0, 6)
+
+-- Settings Logo (⚙️)
+local SettingsBtn = Instance.new("TextButton")
+SettingsBtn.Text = "⚙️"
+SettingsBtn.Font = Enum.Font.GothamBold
+SettingsBtn.TextSize = 20
+SettingsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingsBtn.BackgroundTransparency = 1
+SettingsBtn.Size = UDim2.new(0, 30, 0, 30)
+SettingsBtn.Position = UDim2.new(0, 10, 0, 10)
+SettingsBtn.Visible = false
+SettingsBtn.Parent = ScreenGui
+
+-- Coordinate Label
+local CoordLabel = Instance.new("TextLabel")
+CoordLabel.Text = "Koordinat: -"
+CoordLabel.Font = Enum.Font.Gotham
+CoordLabel.TextSize = 14
+CoordLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CoordLabel.Size = UDim2.new(1, -20, 0, 30)
+CoordLabel.Position = UDim2.new(0, 10, 0, 40)
+CoordLabel.BackgroundTransparency = 1
+CoordLabel.Parent = Frame
+
+-- Get Coordinate Button
+local GetBtn = Instance.new("TextButton")
+GetBtn.Text = "Cek Koordinat"
+GetBtn.Font = Enum.Font.GothamBold
+GetBtn.TextSize = 14
+GetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+GetBtn.BackgroundColor3 = Color3.fromRGB(40, 120, 220)
+GetBtn.Size = UDim2.new(0, 100, 0, 30)
+GetBtn.Position = UDim2.new(0, 10, 0, 80)
+GetBtn.Parent = Frame
+
+local UICorner3 = Instance.new("UICorner", GetBtn)
+UICorner3.CornerRadius = UDim.new(0, 8)
+
+-- Copy Button
+local CopyBtn = Instance.new("TextButton")
+CopyBtn.Text = "Copy"
+CopyBtn.Font = Enum.Font.GothamBold
+CopyBtn.TextSize = 14
+CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
+CopyBtn.Size = UDim2.new(0, 100, 0, 30)
+CopyBtn.Position = UDim2.new(0, 130, 0, 80)
+CopyBtn.Parent = Frame
+
+local UICorner4 = Instance.new("UICorner", CopyBtn)
+UICorner4.CornerRadius = UDim.new(0, 8)
+
+-- Functional Script
+local currentCoord = "-"
+
+GetBtn.MouseButton1Click:Connect(function()
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        local pos = hrp.Position
+        currentCoord = string.format("%.2f, %.2f, %.2f", pos.X, pos.Y, pos.Z)
+        CoordLabel.Text = "Koordinat: " .. currentCoord
+    else
+        CoordLabel.Text = "Koordinat: Tidak Ditemukan"
+    end
+end)
+
+CopyBtn.MouseButton1Click:Connect(function()
+    if setclipboard and currentCoord ~= "-" then
+        setclipboard(currentCoord)
+        CoordLabel.Text = "Koordinat dicopy!"
+    end
+end)
+
+-- Minimize Function
+MinBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+    SettingsBtn.Visible = true
+end)
+
+SettingsBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = true
+    SettingsBtn.Visible = false
+end)
